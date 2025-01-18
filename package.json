@@ -1,0 +1,20 @@
+{
+	"name": "miau-rip-miau",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"prestart": "node src/deploy-commands",
+		"start": "node src/index"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"better-sqlite3": "^11.8.0",
+		"discord.js": "^14.17.3",
+		"dotenv": "^16.4.7",
+		"node-cron": "^3.0.3",
+		"winston": "^3.17.0"
+	}
+}
