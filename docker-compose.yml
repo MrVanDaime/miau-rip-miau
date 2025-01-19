@@ -1,0 +1,13 @@
+services:
+  miau-bot:
+    container_name: miau-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3012:3012"
+    volumes:
+      - ./src:/home/miau-rip-miau/src
+    restart: always
+    env_file:
+      - .env
