@@ -24,7 +24,7 @@ client.once(Events.ClientReady, (readyClient) => {
 
 	// cron service
 	cron.schedule(
-		'* 12 * * *',
+		'0 12 * * *',
 		async () => {
 			let foundTarget = '';
 
