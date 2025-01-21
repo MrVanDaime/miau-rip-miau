@@ -27,8 +27,6 @@ module.exports = {
 
 		const message = interaction.options.getString('message');
 
-		console.log(interaction.channel);
-
 		await interaction.channel.send(message);
 
 		await interaction.reply({
