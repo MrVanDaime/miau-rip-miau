@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const { addGif, searchGif } = require('../../data/db.js');
 
 const validUsers = process.env.USERS.split(',');
@@ -17,12 +17,12 @@ module.exports = {
 				.setMaxLength(255),
 		),
 	async execute(interaction) {
-		// Define canal único para uso do comando
+		// Define pessoas para uso do comando
 		if (!validUsers.includes(interaction.user.id)) {
 			return await interaction.reply({
 				content:
 					'Erro: Você precisa doar 66g de cinzas de gato para usar esse comando.',
-				ephemeral: true,
+				ephemeral: false,
 			});
 		}
 
