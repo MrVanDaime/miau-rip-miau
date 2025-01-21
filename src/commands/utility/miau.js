@@ -1,17 +1,16 @@
 require('dotenv').config();
 const { SlashCommandBuilder } = require('discord.js');
-const { addGif, searchGif } = require('../../data/db.js');
 
 const validUsers = process.env.USERS.split(',');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('gato')
-		.setDescription('Adiciona url na lista de gifs')
+		.setName('miau')
+		.setDescription('Fala do gato')
 		.addStringOption((option) =>
 			option
-				.setName('url')
-				.setDescription('URL do gif')
+				.setName('message')
+				.setDescription('Fala do gato')
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(255),
@@ -26,20 +25,12 @@ module.exports = {
 			});
 		}
 
-		const gif_url = interaction.options.getString('url');
+		const message = interaction.options.getString('message');
 
-		const gifExists = await searchGif(gif_url);
-
-		let returnMessage;
-		if (!gifExists) {
-			const response = await addGif(gif_url, interaction.user.id);
-			returnMessage = response ? `😿` : 'URL inválida';
-		} else {
-			returnMessage = 'GIF já adicionado';
-		}
+		await interaction.channel.send(message);
 
 		await interaction.reply({
-			content: returnMessage,
+			content: message,
 			ephemeral: true,
 		});
 	},
