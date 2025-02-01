@@ -5,11 +5,11 @@ const timezoned = () => {
 	return new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 };
 
-const customFormat = printf((info) => {
+const customFormat = printf(({ level, message }) => {
 	return JSON.stringify({
 		timestamp: timezoned(),
-		level: info.level,
-		message: info.message,
+		level,
+		message,
 	});
 });
 
