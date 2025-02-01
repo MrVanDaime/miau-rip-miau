@@ -1,8 +1,6 @@
 require('dotenv').config();
 const { SlashCommandBuilder } = require('discord.js');
-const { addGif, searchGif } = require('../../data/db.js');
-
-const validUsers = process.env.USERS.split(',');
+const GifService = require('../../services/GifService');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,22 +15,13 @@ module.exports = {
 				.setMaxLength(255),
 		),
 	async execute(interaction) {
-		// Define pessoas para uso do comando
-		if (!validUsers.includes(interaction.user.id)) {
-			return await interaction.reply({
-				content:
-					'Erro: Você precisa doar 66g de cinzas de gato para usar esse comando.',
-				ephemeral: false,
-			});
-		}
+		const gifUrl = interaction.options.getString('url');
 
-		const gif_url = interaction.options.getString('url');
-
-		const gifExists = await searchGif(gif_url);
+		const gifExists = await GifService.gifExists(gifUrl);
 
 		let returnMessage;
 		if (!gifExists) {
-			const response = await addGif(gif_url, interaction.user.id);
+			const response = await GifService.addGif(gifUrl, interaction.user.id);
 			returnMessage = response ? `😿` : 'URL inválida';
 		} else {
 			returnMessage = 'GIF já adicionado';
@@ -40,7 +29,7 @@ module.exports = {
 
 		await interaction.reply({
 			content: returnMessage,
-			ephemeral: true,
+			flags: 'Ephemeral',
 		});
 	},
 };
