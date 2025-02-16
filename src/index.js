@@ -16,6 +16,7 @@ const {
 const SelfbonkService = require('./services/SelfbonkService');
 const token = process.env.DISCORD_TOKEN;
 const channelId = process.env.CHANNEL_ID;
+const selfbonkChannelId = process.env.SELFBONK_CHANNEL_ID;
 const targetId = process.env.TARGET_ID;
 
 // Create a new client instance
@@ -57,7 +58,14 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 				await SelfbonkService.saveSelfbonk(userId, nickName, reason);
 
-				return await interaction.channel.send(`${nickName} ${reason}`);
+				const selfbonkChannel = client.channels.cache.get(selfbonkChannelId);
+				if (selfbonkChannel) {
+					return selfbonkChannel.send(`**${nickName}** ${reason}`);
+				} else {
+					logger.info(
+						`Bonk channel with id: ${selfbonkChannelId} was not found!`,
+					);
+				}
 			} catch (err) {
 				return await interaction.reply({
 					content: 'Infelizmente minha mamãe não está mais entre nós',
