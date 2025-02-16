@@ -1,6 +1,7 @@
 const {
 	addReason,
 	getRandomBonkReason,
+	saveSelfbonk,
 } = require('../data/selfbonkQueries.js');
 
 class SelfbonkService {
@@ -10,6 +11,10 @@ class SelfbonkService {
 
 	async getRandomBonkReason() {
 		return await getRandomBonkReason();
+	}
+
+	async saveSelfbonk(userId, nickName, reason) {
+		return await saveSelfbonk(userId, nickName, reason);
 	}
 }
 
