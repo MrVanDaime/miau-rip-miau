@@ -96,12 +96,6 @@ module.exports = {
 						.setRequired(true)
 						.setMinLength(1)
 						.setMaxLength(20),
-				)
-				.addUserOption((option) =>
-					option
-						.setName('users')
-						.setDescription('Texto do botão')
-						.setRequired(true),
 				),
 		)
 		.addSubcommand((subcommand) =>
