@@ -17,6 +17,10 @@ module.exports = {
 	async execute(interaction) {
 		const gifUrl = interaction.options.getString('url');
 
+		await interaction.deferReply({
+			flags: 'Ephemeral',
+		});
+
 		const gifExists = await GifService.gifExists(gifUrl);
 
 		let returnMessage;
@@ -27,9 +31,8 @@ module.exports = {
 			returnMessage = 'GIF já adicionado';
 		}
 
-		await interaction.reply({
+		await interaction.editReply({
 			content: returnMessage,
-			flags: 'Ephemeral',
 		});
 	},
 };

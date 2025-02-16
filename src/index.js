@@ -9,6 +9,11 @@ const { loadCommands } = require('./services/commandLoader');
 
 const logger = require('./utils/logger');
 const { createGifsTable } = require('./data/gifQueries.js');
+const {
+	createSelfbonksTable,
+	createSelfbonkReasonsTable,
+} = require('./data/selfbonkQueries.js');
+const SelfbonkService = require('./services/SelfbonkService');
 const token = process.env.DISCORD_TOKEN;
 const channelId = process.env.CHANNEL_ID;
 const targetId = process.env.TARGET_ID;
@@ -21,6 +26,8 @@ async function init() {
 
 	// If not exists
 	createGifsTable();
+	createSelfbonksTable();
+	createSelfbonkReasonsTable();
 
 	loadCommands(client);
 
@@ -29,7 +36,35 @@ async function init() {
 }
 
 client.on(Events.InteractionCreate, async (interaction) => {
-	if (!interaction.isChatInputCommand()) return;
+	if (interaction.isButton()) {
+		if (interaction.customId === 'confirmselfbonk') {
+			const userId = interaction.user.id;
+			const nickName = interaction.user.globalName;
+
+			if (validUsers.includes(userId)) {
+				return interaction.reply({
+					content: 'You fren',
+					flags: 'Ephemeral',
+				});
+			}
+
+			try {
+				const reason = await SelfbonkService.getRandomBonkReason();
+
+				await interaction.guild.members.kick(userId, {
+					reason: `Selfbonk: ${reason}`,
+				});
+
+				await SelfbonkService.saveSelfbonk(userId, nickName, reason);
+
+				return await interaction.channel.send(`${nickName} ${reason}`);
+			} catch (err) {
+				return await interaction.reply({
+					content: 'Infelizmente minha mamãe não está mais entre nós',
+				});
+			}
+		}
+	}
 
 	if (!validUsers.includes(interaction.user.id)) {
 		return await interaction.reply({
