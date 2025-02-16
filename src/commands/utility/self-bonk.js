@@ -127,12 +127,12 @@ module.exports = {
 				const footertext = interaction.options.getString('footertext');
 				const buttontext = interaction.options.getString('buttontext');
 
-				const confirm = new ButtonBuilder()
-					.setCustomId('confirm')
+				const confirmselfbonk = new ButtonBuilder()
+					.setCustomId('confirmselfbonk')
 					.setLabel(buttontext)
 					.setStyle(ButtonStyle.Danger);
 
-				const row = new ActionRowBuilder().addComponents(confirm);
+				const row = new ActionRowBuilder().addComponents(confirmselfbonk);
 
 				const embed = new EmbedBuilder()
 					.setColor(bordercolor)
