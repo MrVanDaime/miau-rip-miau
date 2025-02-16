@@ -108,7 +108,7 @@ module.exports = {
 						.setDescription('Mensagem do bonk')
 						.setRequired(true)
 						.setMinLength(1)
-						.setMaxLength(50),
+						.setMaxLength(200),
 				),
 		),
 	async execute(interaction) {
