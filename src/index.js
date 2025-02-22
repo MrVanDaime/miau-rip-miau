@@ -13,10 +13,10 @@ const {
 	createSelfbonksTable,
 	createSelfbonkReasonsTable,
 } = require('./data/selfbonkQueries.js');
+const { createCarfigsTable } = require('./data/carfigQueries.js');
 const SelfbonkService = require('./services/SelfbonkService');
+const CarfigService = require('./services/CarfigService.js');
 const token = process.env.DISCORD_TOKEN;
-const channelId = process.env.CHANNEL_ID;
-const selfbonkChannelId = process.env.SELFBONK_CHANNEL_ID;
 const targetId = process.env.TARGET_ID;
 
 // Create a new client instance
@@ -29,11 +29,12 @@ async function init() {
 	createGifsTable();
 	createSelfbonksTable();
 	createSelfbonkReasonsTable();
+	createCarfigsTable();
 
 	loadCommands(client);
 
 	// cron service
-	gifCronJob(client, channelId, targetId);
+	gifCronJob(client, targetId);
 }
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -57,14 +58,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
 				});
 
 				await SelfbonkService.saveSelfbonk(userId, nickName, reason);
+				const selfbonkChannelId = await CarfigService.getCarfig(
+					interaction.guild.id,
+					'selfbonk',
+				);
 
-				const selfbonkChannel = client.channels.cache.get(selfbonkChannelId);
+				const selfbonkChannel = client.channels.cache.get(
+					selfbonkChannelId.data.value,
+				);
 				if (selfbonkChannel) {
-					return selfbonkChannel.send(`**${nickName}** ${reason}`);
+					return await selfbonkChannel.send(`**${nickName}** ${reason}`);
 				} else {
 					logger.info(
-						`Bonk channel with id: ${selfbonkChannelId} was not found!`,
+						`${interaction.guild.id}: SelfBonk channel with id: ${selfbonkChannelId} was not found!`,
 					);
+					return await interaction.channel.send(`**${nickName}** ${reason}`);
 				}
 			} catch (err) {
 				return await interaction.reply({

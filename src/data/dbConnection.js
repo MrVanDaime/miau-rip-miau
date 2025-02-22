@@ -42,4 +42,16 @@ const getQuery = (query, params = []) => {
 	}
 };
 
-module.exports = { dbConnection, runQuery, getQuery };
+// get 100 rows
+const getAllQuery = (query, params = []) => {
+	const db = dbConnection();
+
+	try {
+		return db.prepare(query).all(params);
+	} catch (err) {
+		logger.error(`Query getting failed: ${err.message}`);
+		return { error: true, message: `Query getting failed: ${err.message}` };
+	}
+};
+
+module.exports = { dbConnection, runQuery, getQuery, getAllQuery };
