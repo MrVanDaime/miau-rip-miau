@@ -9,7 +9,7 @@ const gifCronJob = async (client, targetId) => {
 		async () => {
 			let foundTarget = '';
 
-			client.guilds.cache.forEach(async (guild) => {
+			for (const guild of client.guilds.cache.values()) {
 				try {
 					const target = await guild.members.fetch(targetId);
 					foundTarget = target ? `<@${targetId}>` : '';
@@ -22,8 +22,9 @@ const gifCronJob = async (client, targetId) => {
 					'dailycat',
 				);
 
+				let channelId;
 				if (dailyCatChannel) {
-					const channelId = dailyCatChannel.data.value;
+					channelId = dailyCatChannel.data.value;
 					const channel = client.channels.cache.get(channelId);
 					if (channel) {
 						const gif = await getGif();
@@ -34,7 +35,7 @@ const gifCronJob = async (client, targetId) => {
 						`${guild.id}: Channel with id: ${channelId} was not found!`,
 					);
 				}
-			});
+			}
 		},
 		{
 			timezone: 'America/Sao_Paulo',
