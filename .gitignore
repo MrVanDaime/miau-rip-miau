@@ -2,3 +2,5 @@
 .env
 
 /src/data/database.db
+
+/src/logs/
