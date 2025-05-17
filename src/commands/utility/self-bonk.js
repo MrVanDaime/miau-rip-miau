@@ -115,7 +115,7 @@ module.exports = {
 		const subcommand = interaction.options.getSubcommand();
 
 		switch (subcommand) {
-			case 'createactionbox':
+			case 'createactionbox': {
 				const bordercolor = interaction.options.getString('bordercolor');
 				const author = interaction.options.getString('author');
 				const authorimage = interaction.options.getString('authorimage');
@@ -162,7 +162,8 @@ module.exports = {
 					flags: 'Ephemeral',
 				});
 				break;
-			case 'addreason':
+			}
+			case 'addreason': {
 				const reason = interaction.options.getString('reason');
 
 				await interaction.deferReply({
@@ -172,9 +173,10 @@ module.exports = {
 				await SelfbonkService.addReason(reason, interaction.user.id);
 
 				await interaction.editReply({
-					content: `Mensagem \"${reason}\" adicionada`,
+					content: `Mensagem "${reason}" adicionada`,
 				});
 				break;
+			}
 		}
 	},
 };
