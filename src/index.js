@@ -70,11 +70,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 					return await selfbonkChannel.send(`**${nickName}** ${reason}`);
 				} else {
 					logger.info(
-						`${interaction.guild.id}: SelfBonk channel with id: ${selfbonkChannelId} was not found!`,
+						`${interaction.guild.id}: SelfBonk channel with id: ${selfbonkChannelId.data.value} was not found!`,
 					);
 					return await interaction.channel.send(`**${nickName}** ${reason}`);
 				}
 			} catch (err) {
+				logger.error(`There was a problem running selfbonk: ${err.message}`);
 				return await interaction.reply({
 					content: 'Infelizmente minha mamãe não está mais entre nós',
 				});
