@@ -7,15 +7,9 @@ const gifCronJob = async (client, targetId) => {
 	cron.schedule(
 		'0 12 * * *',
 		async () => {
-			let foundTarget = '';
-
 			for (const guild of client.guilds.cache.values()) {
-				try {
-					const target = await guild.members.fetch(targetId);
-					foundTarget = target ? `<@${targetId}>` : '';
-				} catch (err) {
-					foundTarget = '';
-				}
+				const target = await guild.members.fetch(targetId);
+				const foundTarget = target ? `<@${targetId}>` : '';
 
 				const dailyCatChannel = await CarfigService.getCarfig(
 					guild.id,
