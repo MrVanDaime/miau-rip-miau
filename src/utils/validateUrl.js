@@ -6,12 +6,11 @@ const isValidUrl = async (url) => {
 		if (!regex.test(url)) return false;
 
 		const response = await fetch(url, { method: 'HEAD' });
-		if (!response.ok) return false;
-
-		return true;
+		return response.ok;
 	} catch (err) {
-		logger.error(`Error validating URL:`, err.message);
-		return `Error validating URL:`, err.message;
+		const errorMessage = `Error validating URL: ${err.message}`;
+		logger.error(errorMessage);
+		return errorMessage;
 	}
 };
 

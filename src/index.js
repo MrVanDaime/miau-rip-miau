@@ -14,8 +14,11 @@ const {
 	createSelfbonkReasonsTable,
 } = require('./data/selfbonkQueries.js');
 const { createCarfigsTable } = require('./data/carfigQueries.js');
-const SelfbonkService = require('./services/SelfbonkService');
-const CarfigService = require('./services/CarfigService.js');
+const {
+	handleButtonInteractions,
+} = require('./interactions/button-handlers.js');
+const { handleModalInteractions } = require('./interactions/modal-handlers.js');
+
 const token = process.env.DISCORD_TOKEN;
 const targetId = process.env.TARGET_ID;
 
@@ -39,47 +42,7 @@ async function init() {
 
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (interaction.isButton()) {
-		if (interaction.customId === 'confirmselfbonk') {
-			const userId = interaction.user.id;
-			const nickName = interaction.user.globalName;
-
-			if (validUsers.includes(userId)) {
-				return interaction.reply({
-					content: 'You fren',
-					flags: 'Ephemeral',
-				});
-			}
-
-			try {
-				const reason = await SelfbonkService.getRandomBonkReason();
-
-				await interaction.guild.members.kick(userId, {
-					reason: `Selfbonk: ${reason}`,
-				});
-
-				await SelfbonkService.saveSelfbonk(userId, nickName, reason);
-				const selfbonkChannelId = await CarfigService.getCarfig(
-					interaction.guild.id,
-					'selfbonk',
-				);
-
-				const selfbonkChannel = client.channels.cache.get(
-					selfbonkChannelId.data.value,
-				);
-				if (selfbonkChannel) {
-					return await selfbonkChannel.send(`**${nickName}** ${reason}`);
-				} else {
-					logger.info(
-						`${interaction.guild.id}: SelfBonk channel with id: ${selfbonkChannelId} was not found!`,
-					);
-					return await interaction.channel.send(`**${nickName}** ${reason}`);
-				}
-			} catch (err) {
-				return await interaction.reply({
-					content: 'Infelizmente minha mamãe não está mais entre nós',
-				});
-			}
-		}
+		return handleButtonInteractions(interaction, validUsers, client);
 	}
 
 	if (!validUsers.includes(interaction.user.id)) {
@@ -87,6 +50,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			content:
 				'Você precisa doar 66g de cinzas de gato para usar esse comando.',
 		});
+	}
+
+	if (interaction.isModalSubmit()) {
+		return handleModalInteractions(interaction);
 	}
 
 	const command = interaction.client.commands.get(interaction.commandName);

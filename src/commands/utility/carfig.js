@@ -35,7 +35,7 @@ module.exports = {
 		const subcommand = interaction.options.getSubcommand();
 
 		switch (subcommand) {
-			case 'allcarfigs':
+			case 'allcarfigs': {
 				const carfigs = await CarfigService.getAllCarfigs(interaction.guild.id);
 				let carfigsFormatted = 'Nenhuma carfig definida';
 
@@ -53,7 +53,8 @@ module.exports = {
 					flags: 'Ephemeral',
 				});
 				break;
-			case 'setcarfig':
+			}
+			case 'setcarfig': {
 				const carfigOption = interaction.options.getString('carfigoption');
 				const carfigChannel =
 					interaction.options.getChannel('carfigchannel').id;
@@ -69,6 +70,7 @@ module.exports = {
 					flags: 'Ephemeral',
 				});
 				break;
+			}
 		}
 	},
 };
