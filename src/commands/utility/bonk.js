@@ -37,7 +37,7 @@ module.exports = {
 
 			if (validUser) {
 				await interaction.guild.members.ban(userId, {
-					reason: `Via Miau (${interaction.user.id}): ${reason}`,
+					reason: `Miau: ${reason}`,
 				});
 				message = 'Miau Bonk Miau';
 			}
