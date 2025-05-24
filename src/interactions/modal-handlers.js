@@ -32,6 +32,24 @@ const handleModalInteractions = async (interaction) => {
 			flags: 'Ephemeral',
 		});
 	}
+
+	if (interaction.customId.startsWith('replyModal-')) {
+		const message = interaction.fields.getTextInputValue('message');
+		const messageId = interaction.customId.split('-')[1];
+
+		const channel = interaction.channel;
+		const targetMessage = await channel.messages.fetch(messageId);
+
+		await targetMessage.reply({
+			content: message,
+			withResponse: true,
+		});
+
+		return await interaction.reply({
+			content: 'Miauply',
+			flags: 'Ephemeral',
+		});
+	}
 };
 
 module.exports = { handleModalInteractions };
