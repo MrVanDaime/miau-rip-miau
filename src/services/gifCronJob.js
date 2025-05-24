@@ -22,7 +22,7 @@ const gifCronJob = async (client, targetId) => {
 					const channel = client.channels.cache.get(channelId);
 					if (channel) {
 						const gif = await getGif();
-						if (gif) channel.send(`@everyone ${foundTarget} ${gif}`);
+						if (gif) channel.send(`${foundTarget} ${gif}`);
 					}
 				} else {
 					logger.info(
