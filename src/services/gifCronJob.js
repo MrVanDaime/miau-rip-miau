@@ -8,8 +8,8 @@ const gifCronJob = async (client, targetId) => {
 		'0 12 * * *',
 		async () => {
 			for (const guild of client.guilds.cache.values()) {
-				const target = await guild.members.fetch(targetId);
-				const foundTarget = target ? `<@${targetId}>` : '';
+				const target = await findUser(guild, targetId);
+				const foundTarget = target ? `<@${target.id}>` : '';
 
 				const dailyCatChannel = await CarfigService.getCarfig(
 					guild.id,
@@ -35,6 +35,14 @@ const gifCronJob = async (client, targetId) => {
 			timezone: 'America/Sao_Paulo',
 		},
 	);
+};
+
+const findUser = async (guild, userId) => {
+	try {
+		return await guild.members.fetch(userId);
+	} catch {
+		return false;
+	}
 };
 
 module.exports = { gifCronJob };
