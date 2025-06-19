@@ -12,11 +12,22 @@ module.exports = {
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(255),
+		)
+		.addAttachmentOption((option) =>
+			option.setName('file').setDescription('Filé').setRequired(false),
 		),
 	async execute(interaction) {
 		const message = interaction.options.getString('message');
+		const attachment = interaction.options.getAttachment('file');
 
-		await interaction.channel.send(message);
+		if (attachment) {
+			await interaction.channel.send({
+				content: message,
+				files: [attachment.url],
+			});
+		} else {
+			await interaction.channel.send(message);
+		}
 
 		await interaction.reply({
 			content: message,
