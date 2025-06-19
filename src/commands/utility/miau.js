@@ -12,15 +12,25 @@ module.exports = {
 				.setRequired(true)
 				.setMinLength(1)
 				.setMaxLength(255),
+		)
+		.addAttachmentOption((option) =>
+			option.setName('file').setDescription('Filé').setRequired(false),
 		),
 	async execute(interaction) {
 		const message = interaction.options.getString('message');
+		const attachment = interaction.options.getAttachment('file');
 
-		await interaction.channel.send(message);
-
-		await interaction.reply({
-			content: message,
+		await interaction.deferReply({
 			flags: 'Ephemeral',
+		});
+
+		await interaction.channel.send({
+			content: message,
+			files: attachment ? [attachment.url] : null,
+		});
+
+		await interaction.editReply({
+			content: message,
 		});
 	},
 };
