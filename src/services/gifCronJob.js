@@ -1,5 +1,4 @@
 const cron = require('node-cron');
-const logger = require('../utils/logger');
 const { getGif } = require('../data/gifQueries.js');
 const CarfigService = require('../services/CarfigService.js');
 
@@ -24,10 +23,6 @@ const gifCronJob = async (client, targetId) => {
 						const gif = await getGif();
 						if (gif) channel.send(`${foundTarget} ${gif}`);
 					}
-				} else {
-					logger.info(
-						`${guild.id}: Channel with id: ${channelId} was not found!`,
-					);
 				}
 			}
 		},
