@@ -20,18 +20,17 @@ module.exports = {
 		const message = interaction.options.getString('message');
 		const attachment = interaction.options.getAttachment('file');
 
-		if (attachment) {
-			await interaction.channel.send({
-				content: message,
-				files: [attachment.url],
-			});
-		} else {
-			await interaction.channel.send(message);
-		}
-
-		await interaction.reply({
-			content: message,
+		await interaction.deferReply({
 			flags: 'Ephemeral',
+		});
+
+		await interaction.channel.send({
+			content: message,
+			files: attachment ? [attachment.url] : null,
+		});
+
+		await interaction.editReply({
+			content: message,
 		});
 	},
 };
