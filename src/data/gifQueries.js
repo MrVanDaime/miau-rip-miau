@@ -17,20 +17,7 @@ const createGifsTable = () => {
 
 const getGif = async () => {
 	try {
-		const record = getQuery(
-			'SELECT id, gif_url FROM gifs WHERE sent = 0 ORDER BY RANDOM();',
-		);
-
-		if (record) {
-			const validUrl = await isValidUrl(record.gif_url);
-			if (!validUrl) return false;
-
-			runQuery('UPDATE gifs SET sent = 1 WHERE id = ?;', [record.id]);
-			return record.gif_url;
-		} else {
-			runQuery('UPDATE gifs SET sent = 0;');
-			return await getRandomGif();
-		}
+		return await getRandomGif();
 	} catch (err) {
 		logger.error(`Error getting GIF from database: ${err.message}`);
 		return `Error getting GIF from database: ${err.message}`;
@@ -38,18 +25,23 @@ const getGif = async () => {
 };
 
 const getRandomGif = async () => {
-	const record = getQuery(
-		'SELECT id, gif_url FROM gifs WHERE sent = 0 ORDER BY RANDOM();',
-	);
+	while (true) {
+		const record = getQuery(
+			'SELECT id, gif_url FROM gifs WHERE sent = 0 ORDER BY RANDOM();',
+		);
 
-	if (record) {
-		const validUrl = await isValidUrl(record.gif_url);
-		if (!validUrl) return false;
+		if (record) {
+			const validUrl = await isValidUrl(record.gif_url);
+			if (validUrl) {
+				runQuery('UPDATE gifs SET sent = 1 WHERE id = ?;', [record.id]);
+				return record.gif_url;
+			}
 
-		runQuery('UPDATE gifs SET sent = 1 WHERE id = ?;', [record.id]);
-		return record.gif_url;
+			runQuery('DELETE FROM gifs WHERE id = ?;', [record.id]);
+		} else {
+			runQuery('UPDATE gifs SET sent = 0;');
+		}
 	}
-	return null;
 };
 
 const addGif = async (gif_url, user_id) => {
@@ -79,7 +71,7 @@ const searchGif = async (gif_url) => {
 
 		const record = getQuery('SELECT * FROM gifs WHERE gif_url = ?;', [gif_url]);
 		return !!record; // true if exists, false otherwise
-	} catch {
+	} catch (err) {
 		logger.error(`Error searching GIF in the database: ${err.message}`);
 		return {
 			error: true,
