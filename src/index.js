@@ -19,11 +19,19 @@ const {
 } = require('./interactions/button-handlers.js');
 const { handleModalInteractions } = require('./interactions/modal-handlers.js');
 
+const { makina } = require('./services/makina.js');
+
 const token = process.env.DISCORD_TOKEN;
 const targetId = process.env.TARGET_ID;
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+	],
+});
 
 async function init() {
 	logger.info(`Goodbye leoma cat.`);
@@ -84,6 +92,35 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		} catch (replyError) {
 			// Log the reply error if the interaction is unknown or expired
 			logger.error(`Failed to respond to interaction: ${replyError.message}`);
+		}
+	}
+});
+
+client.on(Events.MessageCreate, async (message) => {
+	if (message.author.bot) return;
+
+	const keywords = ['miau', 'gato'];
+	const hasKeyword = keywords.some((keyword) =>
+		message.content.toLowerCase().includes(keyword),
+	);
+	const isInteracting = message.mentions.has(client.user) || message.reference;
+
+	if (hasKeyword || isInteracting) {
+		try {
+			await message.channel.sendTyping();
+			const makinaText = await makina(message);
+
+			if (isInteracting) {
+				await message.reply({
+					content: makinaText,
+				});
+			} else {
+				await message.channel.send({
+					content: makinaText,
+				});
+			}
+		} catch (err) {
+			logger.error(`Error processing message: ${err.message}`);
 		}
 	}
 });
